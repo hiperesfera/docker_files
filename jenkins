@@ -1,7 +1,7 @@
 FROM debian
 
 RUN apt update
-RUN apt install wget gnupg apt-transport-https -y
+RUN apt install wget gnupg apt-transport-https default-jre -y
 RUN wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
 RUN echo  "deb https://pkg.jenkins.io/debian-stable binary/" >> /etc/apt/sources.list
 RUN apt update

@@ -1,0 +1,16 @@
+FROM debian
+
+RUN apt update &&\
+	apt install squid -y
+
+RUN echo 'acl localnet src 10.0.0.0/8\n\     
+	acl localnet src 172.16.0.0/12\n\  
+	acl localnet src 192.168.0.0/16\n\ 
+	acl yum dstdomain example.com\n\
+	http_port 3128\n\
+	http_access allow localhost\n\
+	http_access allow localnet dstdomain\n\
+	http_access deny all\n'\
+	> /etc/squid/squid.conf
+
+CMD  ["/usr/sbin/squid","-NsY","-f","/etc/squid/squid.conf"]

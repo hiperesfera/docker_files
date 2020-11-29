@@ -10,7 +10,6 @@ RUN mkdir /var/spool/squid
 RUN curl -s http://www.squid-cache.org/Versions/v4/squid-4.12.tar.gz | tar -xvz
 RUN ./squid-4.12/configure --enable-icap-client --enable-ssl --with-openssl --enable-ssl-crtd --sysconfdir=/etc/squid --with-logdir=/var/log/squid --with-swapdir=/var/spool/squid --with-pidfile=/var/run/squid.pid
 RUN make && make install
-COPY squid.conf /etc/squid/squid.conf
 RUN /usr/local/squid/libexec/security_file_certgen -c -s /var/spool/squid/ssl_db -M 4MB
 RUN openssl req -newkey rsa:4096 -x509 -keyout /etc/squid/squid.key -out /etc/squid/squid.pem -days 365 -nodes -subj '/CN=localhost'
 RUN chmod 400 /etc/squid/squid.key
@@ -18,6 +17,8 @@ RUN chown -R proxy.proxy /var/log/squid
 RUN chown -R proxy.proxy /var/spool/squid
 RUN chown -R proxy.proxy /etc/squid
 RUN chown -R proxy.proxy /var/cache/squid
+COPY squid.conf /etc/squid/squid.conf
 RUN /usr/local/squid/sbin/squid -N -z -f /etc/squid/squid.conf
 EXPOSE 3128
+RUN cat /etc/squid/squid.pem
 CMD ["/usr/local/squid/sbin/squid","-N","-f","/etc/squid/squid.conf"]
